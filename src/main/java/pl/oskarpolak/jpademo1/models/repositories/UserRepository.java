@@ -6,4 +6,5 @@ import pl.oskarpolak.jpademo1.models.UserEntity;
 
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, Integer> {
+    boolean existsByUsername(String username);
 }

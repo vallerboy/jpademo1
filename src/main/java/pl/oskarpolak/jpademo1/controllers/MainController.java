@@ -44,6 +44,11 @@ public class MainController {
             return "register";
         }
 
+        if(userRepository.existsByUsername(login)){
+            model.addAttribute("info", "Nick zajety");
+            return "register";
+        }
+
         UserEntity userEntity = new UserEntity();
         userEntity.setPassword(password);
         userEntity.setEmail(email);
