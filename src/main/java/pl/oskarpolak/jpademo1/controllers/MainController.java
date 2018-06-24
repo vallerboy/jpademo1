@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.oskarpolak.jpademo1.models.UserEntity;
 import pl.oskarpolak.jpademo1.models.repositories.UserRepository;
+import pl.oskarpolak.jpademo1.models.services.UserService;
 
 import java.util.Optional;
 
@@ -19,12 +20,13 @@ public class MainController {
     @Autowired
     UserRepository userRepository;
 
-    @GetMapping("/")
-    @ResponseBody
-    public String index(){
-        Optional<UserEntity> downData = userRepository.findById(1);
+    @Autowired
+    UserService userService;
 
-        return downData.orElseThrow(IllegalStateException::new).toString();
+    @GetMapping("/")
+    public String index(Model model){
+        model.addAttribute("user", userService);
+        return "index";
     }
 
 
@@ -68,10 +70,14 @@ public class MainController {
     public String login(@RequestParam("login") String login,
                         @RequestParam("password") String password,
                         Model model){
-        if(userRepository.existsByUsernameAndPassword(login, password)){
-            model.addAttribute("info", "Zalogowano!");
-            return "login";
+        Optional<UserEntity> user = userRepository.findByUsernameAndPassword(login, password);
+
+        if(user.isPresent()) {
+            userService.setLogin(true);
+            userService.setUser(user.get());
+            return "redirect:/";
         }
+
         model.addAttribute("info", "Błędne dane!");
         return "login";
     }
