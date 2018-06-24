@@ -59,4 +59,21 @@ public class MainController {
         return "register";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestParam("login") String login,
+                        @RequestParam("password") String password,
+                        Model model){
+        if(userRepository.existsByUsernameAndPassword(login, password)){
+            model.addAttribute("info", "Zalogowano!");
+            return "login";
+        }
+        model.addAttribute("info", "Błędne dane!");
+        return "login";
+    }
+
 }
